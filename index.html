@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fish Card Maker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Fish Card Maker</h1>
+
+  <div class="controls">
+    <input id="fishName" placeholder="Fish Name" />
+
+    <select id="shape">
+      <option value="flopper">Flopper</option>
+      <option value="stripey">Stripey</option>
+      <option value="snooper">Snooper</option>
+      <option value="clayfish">Clayfish</option>
+      <option value="betty">Betty</option>
+    </select>
+
+    <select id="primaryColor"></select>
+    <select id="secondaryColor"></select>
+
+    <button onclick="createCard()">Create Fish</button>
+  </div>
+
+  <div id="cards"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
