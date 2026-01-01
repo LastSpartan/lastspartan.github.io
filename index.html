@@ -1,32 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Fish Card Maker</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Fish Stat Card Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2e;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .card {
+      background: #2a2a40;
+      border-radius: 12px;
+      padding: 20px;
+      width: 400px;
+      margin-bottom: 20px;
+    }
+
+    .fish {
+      width: 100%;
+      height: 140px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #ffd166;
+      color: #2a2a40;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ffca66;
+    }
+
+    .removeCard {
+      background-color: #e63946 !important;
+      color: white !important;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .removeCard:hover {
+      background-color: #f55a66 !important;
+    }
+
+    .ability {
+      margin-top: 8px;
+      background: #1e1e2e;
+      padding: 8px;
+      border-radius: 8px;
+    }
+
+    .ability-name {
+      font-weight: bold;
+      color: #ffd166;
+    }
+
+    .type {
+      margin: 8px 0;
+      font-weight: bold;
+    }
+
+    h2, h3 {
+      margin: 5px 0;
+    }
+
+    #savedCards .card {
+      width: 350px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Fish Card Maker</h1>
 
-  <div class="controls">
-    <input id="fishName" placeholder="Fish Name" />
+<div class="card">
+  <h2>Fish Card</h2>
 
-    <select id="shape">
-      <option value="flopper">Flopper</option>
-      <option value="stripey">Stripey</option>
-      <option value="snooper">Snooper</option>
-      <option value="clayfish">Clayfish</option>
-      <option value="betty">Betty</option>
-    </select>
+  <input id="customName" placeholder="Fish Name" />
 
-    <select id="primaryColor"></select>
-    <select id="secondaryColor"></select>
+  <select id="fishShape">
+    <option value="dasher">Dasher</option>
+    <option value="sunstreak">Sunstreak</option>
+    <option value="snooper">Snooper</option>
+    <option value="kob">Kob</option>
+    <option value="brinely">Brinely</option>
+    <option value="spotty">Spotty</option>
+    <option value="flopper">Flopper</option>
+    <option value="stripey">Stripey</option>
+    <option value="glitter">Glitter</option>
+    <option value="blockfish">Blockfish</option>
+    <option value="betty">Betty</option>
+    <option value="clayfish">Clayfish</option>
+  </select>
 
-    <button onclick="createCard()">Create Fish</button>
-  </div>
+  <select id="primary">
+    <option value="blue">Blue</option>
+    <option value="red">Red</option>
+    <option value="orange">Orange</option>
+    <option value="yellow">Yellow</option>
+    <option value="brown">Brown</option>
+    <option value="purple">Purple</option>
+    <option value="pink">Pink</option>
+    <option value="magenta">Magenta</option>
+    <option value="black">Black</option>
+    <option value="gray">Gray</option>
+    <option value="white">White</option>
+    <option value="lime">Lime</option>
+    <option value="green">Green</option>
+    <option value="sky">Sky</option>
+    <option value="cyan">Cyan</option>
+  </select>
 
-  <div id="cards"></div>
+  <select id="secondary">
+    <option value="blue">Blue</option>
+    <option value="red">Red</option>
+    <option value="orange">Orange</option>
+    <option value="yellow">Yellow</option>
+    <option value="brown">Brown</option>
+    <option value="purple">Purple</option>
+    <option value="pink">Pink</option>
+    <option value="magenta">Magenta</option>
+    <option value="black">Black</option>
+    <option value="gray">Gray</option>
+    <option value="white">White</option>
+    <option value="lime">Lime</option>
+    <option value="green">Green</option>
+    <option value="sky">Sky</option>
+    <option value="cyan">Cyan</option>
+  </select>
 
-  <script src="script.js"></script>
+  <div id="fish" class="fish"></div>
+
+  <div class="type" id="typeText"></div>
+  <div id="stats"></div>
+  <div id="abilities"></div>
+
+  <button id="saveCard">Save Fish Card</button>
+</div>
+
+<h2>Saved Fish Cards</h2>
+<div id="savedCards"></div>
+
+<script>
+  const fishes = {
+    dasher:    { atk: 3, hp: 12, spd: 3, special: "Amped" },
+    sunstreak: { atk: 3, hp: 12, spd: 3, special: "Poised" },
+    snooper:   { atk: 2, hp: 15, spd: 3, special: "Amped" },
+    kob:       { atk: 2, hp: 15, spd: 3, special: "Poised" },
+    brinely:   { atk: 4, hp: 12, spd: 2, special: "Amped" },
+    spotty:    { atk: 4, hp: 12, spd: 2, special: "Poised" },
+    flopper:   { atk: 4, hp: 15, spd: 1, special: "Amped" },
+    stripey:   { atk: 4, hp: 15, spd: 1, special: "Poised" },
+    glitter:   { atk: 2, hp: 18, spd: 2, special: "Poised" },
+    blockfish: { atk: 3, hp: 18, spd: 1, special: "Poised" },
+    betty:     { atk: 3, hp: 18, spd: 1, special: "Amped" },
+    clayfish:  { atk: 2, hp: 18, spd: 2, special: "Amped" }
+  };
+
+  const specialText = {
+    Amped: "This fish can attack the turn it is swapped in.",
+    Poised: "When an enemy fish swaps in this fish gets a free attack against it."
+  };
+
+  const colors = {
+    blue: { color: "#4ea8de", abilities:[{name:"True Blue", text:"Make an attack. It deals double damage to Red fish!"},{name:"Out of the Blue", text:"Make an attack. It deals double damage to Orange fish!"}] },
+    red: { color: "#e63946", abilities:[{name:"Seeing Red", text:"Make an attack. It deals double damage to Orange fish!"},{name:"Red Hot", text:"Make an attack. It deals double damage to Yellow fish!"}] },
+    orange: { color: "#f4a261", abilities:[{name:"Orange Crush", text:"Make an attack. It deals double damage to Yellow fish!"},{name:"Clockwork Orange", text:"Make an attack. It deals double damage to Brown fish!"}] },
+    yellow: { color: "#ffd166", abilities:[{name:"Yellowstone", text:"Make an attack. It deals double damage to Brown fish!"},{name:"Mellow Yellow", text:"Make an attack. It deals double damage to Purple fish!"}] },
+    brown: { color: "#8d6e63", abilities:[{name:"Brown Out", text:"Make an attack. It deals double damage to Purple fish!"},{name:"Brown Noise", text:"Make an attack. It deals double damage to Pink fish!"}] },
+    purple: { color: "#9b5de5", abilities:[{name:"Purple Rain", text:"Make an attack. It deals double damage to Pink fish!"},{name:"Purple Haze", text:"Make an attack. It deals double damage to Magenta fish!"}] },
+    pink: { color: "#f15bb5", abilities:[{name:"Pink Slip", text:"Make an attack. It deals double damage to Magenta fish!"},{name:"Tickled Pink", text:"Make an attack. It deals double damage to Black fish!"}] },
+    magenta: { color: "#d000ff", abilities:[{name:"Magen-Tension", text:"Make an attack. It deals double damage to Black fish!"},{name:"Magenta-ray", text:"Make an attack. It deals double damage to Gray fish!"}] },
+    black: { color: "#000000", abilities:[{name:"Blackout", text:"Make an attack. It deals double damage to Gray fish!"},{name:"Back in Black", text:"Make an attack. It deals double damage to White fish!"}] },
+    gray: { color: "#9e9e9e", abilities:[{name:"Shades of Gray", text:"Make an attack. It deals double damage to White fish!"},{name:"Gray Area", text:"Make an attack. It deals double damage to Lime fish!"}] },
+    white: { color: "#f5f5f5", abilities:[{name:"White Hot", text:"Make an attack. It deals double damage to Lime fish!"},{name:"Whitewash", text:"Make an attack. It deals double damage to Green fish!"}] },
+    lime: { color: "#b9fbc0", abilities:[{name:"Lime Light", text:"Make an attack. It deals double damage to Green fish!"},{name:"Limewire", text:"Make an attack. It deals double damage to Sky fish!"}] },
+    green: { color: "#70e000", abilities:[{name:"Green with Envy", text:"Make an attack. It deals double damage to Sky fish!"},{name:"Going Green", text:"Make an attack. It deals double damage to Cyan fish!"}] },
+    sky: { color: "#8ecae6", abilities:[{name:"Sky High", text:"Make an attack. It deals double damage to Cyan fish!"},{name:"Blue Sky Thinking", text:"Make an attack. It deals double damage to Blue fish!"}] },
+    cyan: { color: "#00f5d4", abilities:[{name:"Cyanara", text:"Make an attack. It deals double damage to Blue fish!"},{name:"Cyanide Strike", text:"Make an attack. It deals double damage to Red fish!"}] }
+  };
+
+  // Thin secondary stripes
+  function applyStripedBackground(div, primaryColor, secondaryColor) {
+    if(primaryColor === secondaryColor){
+      div.style.backgroundImage = "";
+      div.style.backgroundColor = primaryColor.color;
+    } else {
+      div.style.backgroundImage = `repeating-linear-gradient(
+        45deg,
+        ${secondaryColor.color} 0 4px,
+        ${primaryColor.color} 4px 12px
+      )`;
+    }
+  }
+
+  function updateCard() {
+    const fishShape = document.getElementById("fishShape").value;
+    const primary = document.getElementById("primary").value;
+    const secondary = document.getElementById("secondary").value;
+    const customName = document.getElementById("customName").value || fishShape;
+
+    const fish = fishes[fishShape];
+    const primaryColor = colors[primary];
+    const secondaryColor = colors[secondary];
+
+    const fishDiv = document.getElementById("fish");
+    applyStripedBackground(fishDiv, primaryColor, secondaryColor);
+
+    document.getElementById("typeText").textContent = `Name: ${customName} | Type: ${primary.toUpperCase()} / ${secondary.toUpperCase()}`;
+
+    document.getElementById("stats").innerHTML = `
+      <div style="display:flex; justify-content:space-between; font-weight:bold;">
+        <span>Attack</span>
+        <span>Defense</span>
+        <span>Speed</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span>${fish.atk}</span>
+        <span>${fish.hp}</span>
+        <span>${fish.spd}</span>
+      </div>
+    `;
+
+    const abilitiesDiv = document.getElementById("abilities");
+    abilitiesDiv.innerHTML = "<h3>Abilities</h3>";
+
+    primaryColor.abilities.slice(0,2).forEach((a,i)=>{
+      abilitiesDiv.innerHTML += `
+        <div class="ability">
+          <div class="ability-name">Primary ${i+1}: ${a.name}</div>
+          <div>${a.text}</div>
+        </div>
+      `;
+    });
+
+    if(primary !== secondary){
+      const secAbility = secondaryColor.abilities[0];
+      abilitiesDiv.innerHTML += `
+        <div class="ability">
+          <div class="ability-name">Secondary: ${secAbility.name}</div>
+          <div>${secAbility.text}</div>
+        </div>
+      `;
+    }
+
+    abilitiesDiv.innerHTML += `
+      <div class="ability">
+        <div class="ability-name">Special: ${fish.special}</div>
+        <div>${specialText[fish.special]}</div>
+      </div>
+    `;
+  }
+
+  document.getElementById("fishShape").onchange = updateCard;
+  document.getElementById("primary").onchange = updateCard;
+  document.getElementById("secondary").onchange = updateCard;
+  document.getElementById("customName").oninput = updateCard;
+
+  document.getElementById("saveCard").onclick = function() {
+    const savedCardsDiv = document.getElementById("savedCards");
+
+    const fishShape = document.getElementById("fishShape").value;
+    const primary = document.getElementById("primary").value;
+    const secondary = document.getElementById("secondary").value;
+    const customName = document.getElementById("customName").value || fishShape;
+    const fish = fishes[fishShape];
+    const primaryColor = colors[primary];
+    const secondaryColor = colors[secondary];
+
+    const cardClone = document.createElement("div");
+    cardClone.className = "card";
+
+    cardClone.innerHTML = `
+      <div class="fish" style="height:100px;"></div>
+      <div class="type">Name: ${customName} | Type: ${primary.toUpperCase()} / ${secondary.toUpperCase()}</div>
+      <div style="display:flex; justify-content:space-between; font-weight:bold;">
+        <span>Attack</span>
+        <span>Defense</span>
+        <span>Speed</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span>${fish.atk}</span>
+        <span>${fish.hp}</span>
+        <span>${fish.spd}</span>
+      </div>
+      <h3>Abilities</h3>
+      ${primaryColor.abilities.slice(0,2).map((a,i)=>`
+        <div class="ability">
+          <div class="ability-name">Primary ${i+1}: ${a.name}</div>
+          <div>${a.text}</div>
+        </div>
+      `).join('')}
+      ${primary!==secondary? `<div class="ability">
+        <div class="ability-name">Secondary: ${secondaryColor.abilities[0].name}</div>
+        <div>${secondaryColor.abilities[0].text}</div>
+      </div>` : ''}
+      <div class="ability">
+        <div class="ability-name">Special: ${fish.special}</div>
+        <div>${specialText[fish.special]}</div>
+      </div>
+      <button class="removeCard">Remove</button>
+    `;
+
+    applyStripedBackground(cardClone.querySelector(".fish"), primaryColor, secondaryColor);
+
+    cardClone.querySelector(".removeCard").onclick = function() {
+      savedCardsDiv.removeChild(cardClone);
+    };
+
+    savedCardsDiv.appendChild(cardClone);
+  };
+
+  updateCard();
+</script>
+
 </body>
 </html>
