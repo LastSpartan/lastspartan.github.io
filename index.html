@@ -11,75 +11,39 @@
       gap: 30px;
       padding: 40px;
     }
-
-    .sidebar {
-      width: 200px;
-    }
-
+    .sidebar { width: 220px; }
     .card {
       background: #2a2a40;
       border-radius: 12px;
       padding: 20px;
       width: 400px;
-      margin-bottom: 20px;
     }
-
     .fish {
       width: 100%;
       height: 140px;
       border-radius: 10px;
       margin-bottom: 10px;
     }
-
     input, select, button {
       width: 100%;
       margin-bottom: 10px;
       padding: 6px;
       border-radius: 6px;
       border: none;
-      font-size: 14px;
     }
-
     button {
-      background-color: #ffd166;
-      color: #2a2a40;
+      background: #ffd166;
       font-weight: bold;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #ffca66;
-    }
-
-    .removeCard {
-      background-color: #e63946 !important;
-      color: white !important;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-    }
-
+    .type { font-weight: bold; margin: 8px 0; }
     .ability {
-      margin-top: 8px;
-      background: #1e1e2e;
-      padding: 8px;
-      border-radius: 8px;
+      background:#1e1e2e;
+      padding:8px;
+      border-radius:8px;
+      margin-top:6px;
     }
-
-    .ability-name {
-      font-weight: bold;
-      color: #ffd166;
-    }
-
-    .type {
-      margin: 8px 0;
-      font-weight: bold;
-    }
-
-    #savedCards .card {
-      width: 350px;
-    }
+    .ability-name { color:#ffd166;font-weight:bold; }
   </style>
 </head>
 <body>
@@ -116,20 +80,14 @@
     <select id="secondary"></select>
 
     <div id="fish" class="fish"></div>
-
-    <div class="type" id="typeText"></div>
+    <div id="typeText" class="type"></div>
     <div id="stats"></div>
     <div id="abilities"></div>
-
-    <button id="saveCard">Save Fish Card</button>
   </div>
-
-  <h2>Saved Fish Cards</h2>
-  <div id="savedCards"></div>
 </div>
 
 <script>
-const fishes = {
+const fishes={
   dasher:{atk:3,hp:12,spd:3,special:"Amped"},
   sunstreak:{atk:3,hp:12,spd:3,special:"Poised"},
   snooper:{atk:2,hp:15,spd:3,special:"Amped"},
@@ -144,135 +102,107 @@ const fishes = {
   clayfish:{atk:2,hp:18,spd:2,special:"Amped"}
 };
 
-const specialText = {
+const specialText={
   Amped:"This fish can attack the turn it is swapped in.",
-  Poised:"When an enemy fish swaps in this fish gets a free attack against it."
+  Poised:"When an enemy fish swaps in, this fish attacks it."
 };
 
-const colors = {
-  blue:{color:"#4ea8de",abilities:[{name:"True Blue",text:"Double damage to Red."},{name:"Out of the Blue",text:"Double damage to Orange."}]},
-  red:{color:"#e63946",abilities:[{name:"Seeing Red",text:"Double damage to Orange."},{name:"Red Hot",text:"Double damage to Yellow."}]},
-  orange:{color:"#f4a261",abilities:[{name:"Orange Crush",text:"Double damage to Yellow."},{name:"Clockwork Orange",text:"Double damage to Brown."}]},
-  yellow:{color:"#ffd166",abilities:[{name:"Yellowstone",text:"Double damage to Brown."},{name:"Mellow Yellow",text:"Double damage to Purple."}]},
-  brown:{color:"#8d6e63",abilities:[{name:"Brown Out",text:"Double damage to Purple."},{name:"Brown Noise",text:"Double damage to Pink."}]},
-  purple:{color:"#9b5de5",abilities:[{name:"Purple Rain",text:"Double damage to Pink."},{name:"Purple Haze",text:"Double damage to Magenta."}]},
-  pink:{color:"#f15bb5",abilities:[{name:"Pink Slip",text:"Double damage to Magenta."},{name:"Tickled Pink",text:"Double damage to Black."}]},
-  magenta:{color:"#d000ff",abilities:[{name:"Magen-Tension",text:"Double damage to Black."},{name:"Magenta-ray",text:"Double damage to Gray."}]},
-  black:{color:"#000",abilities:[{name:"Blackout",text:"Double damage to Gray."},{name:"Back in Black",text:"Double damage to White."}]},
-  gray:{color:"#9e9e9e",abilities:[{name:"Shades of Gray",text:"Double damage to White."},{name:"Gray Area",text:"Double damage to Lime."}]},
-  white:{color:"#f5f5f5",abilities:[{name:"White Hot",text:"Double damage to Lime."},{name:"Whitewash",text:"Double damage to Green."}]},
-  lime:{color:"#b9fbc0",abilities:[{name:"Lime Light",text:"Double damage to Green."},{name:"Limewire",text:"Double damage to Sky."}]},
-  green:{color:"#70e000",abilities:[{name:"Green with Envy",text:"Double damage to Sky."},{name:"Going Green",text:"Double damage to Cyan."}]},
-  sky:{color:"#8ecae6",abilities:[{name:"Sky High",text:"Double damage to Cyan."},{name:"Blue Sky Thinking",text:"Double damage to Blue."}]},
-  cyan:{color:"#00f5d4",abilities:[{name:"Cyanara",text:"Double damage to Blue."},{name:"Cyanide Strike",text:"Double damage to Red."}]}
+const colors={
+  orange:"#f4a261",gray:"#9e9e9e",blue:"#4ea8de",white:"#f5f5f5",
+  red:"#e63946",yellow:"#ffd166",pink:"#f15bb5",purple:"#9b5de5",
+  cyan:"#00f5d4",lime:"#b9fbc0",green:"#70e000",sky:"#8ecae6",
+  black:"#000000",brown:"#8d6e63",magenta:"#d000ff"
 };
 
-const commonFish = [
+const commonFish=[
   {name:"Anemone",shape:"stripey",primary:"orange",secondary:"gray"},
   {name:"Black Tang",shape:"flopper",primary:"gray"},
   {name:"Blue Tang",shape:"flopper",primary:"gray",secondary:"blue"},
+  {name:"Butterflyfish",shape:"clayfish",primary:"white",secondary:"gray"},
+  {name:"Cichlid",shape:"sunstreak",primary:"blue",secondary:"gray"},
   {name:"Clownfish",shape:"kob",primary:"orange",secondary:"white"},
+  {name:"Cotton Candy Betta",shape:"spotty",primary:"pink",secondary:"sky"},
+  {name:"Dottyback",shape:"blockfish",primary:"purple",secondary:"yellow"},
+  {name:"Emperor Red Snapper",shape:"clayfish",primary:"white",secondary:"red"},
+  {name:"Goatfish",shape:"spotty",primary:"white",secondary:"yellow"},
+  {name:"Moorish Idol",shape:"glitter",primary:"white",secondary:"gray"},
+  {name:"Ornate Butterflyfish",shape:"clayfish",primary:"white",secondary:"orange"},
+  {name:"Parrotfish",shape:"dasher",primary:"cyan",secondary:"pink"},
+  {name:"Queen Angelfish",shape:"brinely",primary:"lime",secondary:"sky"},
+  {name:"Red Cichlid",shape:"betty",primary:"red",secondary:"white"},
+  {name:"Red Lipped Blenny",shape:"snooper",primary:"gray",secondary:"red"},
+  {name:"Red Snapper",shape:"blockfish",primary:"red",secondary:"white"},
+  {name:"Threadfin",shape:"flopper",primary:"white",secondary:"yellow"},
+  {name:"Tomato Clownfish",shape:"kob",primary:"red",secondary:"white"},
+  {name:"Triggerfish",shape:"sunstreak",primary:"gray",secondary:"white"},
+  {name:"Yellowtail Parrotfish",shape:"dasher",primary:"cyan",secondary:"yellow"},
   {name:"Yellow Tang",shape:"flopper",primary:"yellow"}
 ];
 
-const primarySel = document.getElementById("primary");
-const secondarySel = document.getElementById("secondary");
+const primarySel=document.getElementById("primary");
+const secondarySel=document.getElementById("secondary");
 Object.keys(colors).forEach(c=>{
   primarySel.innerHTML+=`<option value="${c}">${c}</option>`;
   secondarySel.innerHTML+=`<option value="${c}">${c}</option>`;
 });
 
-const cfSelect=document.getElementById("commonFish");
+const cfSel=document.getElementById("commonFish");
 commonFish.forEach((f,i)=>{
-  cfSelect.innerHTML+=`<option value="${i}">${f.name}</option>`;
+  cfSel.innerHTML+=`<option value="${i}">${f.name}</option>`;
 });
 
-cfSelect.onchange=()=>{
-  const f=commonFish[cfSelect.value];
-  if(!f){
-    resetCard();
-    return;
-  }
-  fishShape.value=f.shape;
-  primary.value=f.primary;
-  secondary.value=f.secondary||f.primary;
-  customName.value="";
-  updateCard();
-};
-
-function resetCard(){
-  fishShape.value="dasher";
-  primary.value="blue";
-  secondary.value="blue";
-  customName.value="";
-  updateCard();
+function striped(div,p,s){
+  div.style.background=p===s?colors[p]:
+    `repeating-linear-gradient(45deg,
+      ${colors[s]} 0 4px,
+      ${colors[p]} 4px 12px)`;
 }
 
-function applyStripedBackground(div,p,s){
-  if(p===s){
-    div.style.background=p.color;
-  } else {
-    div.style.backgroundImage=`repeating-linear-gradient(
-      45deg,
-      ${s.color} 0 4px,
-      ${p.color} 4px 12px
-    )`;
-  }
-}
-
-function updateCard(){
+function update(){
   const shape=fishShape.value;
   const p=primary.value;
   const s=secondary.value;
-  const fish=fishes[shape];
-
-  const matchIndex=commonFish.findIndex(f=>
-    f.shape===shape &&
-    f.primary===p &&
-    (f.secondary||p)===s
+  const match=commonFish.findIndex(f=>
+    f.shape===shape&&f.primary===p&&(f.secondary||p)===s
   );
+  cfSel.value=match>=0?match:"";
 
-  cfSelect.value=matchIndex>=0?matchIndex:"";
+  striped(fishDiv,p,s);
 
   const name=customName.value
     ? customName.value
-    : matchIndex>=0
-      ? `<em>${commonFish[matchIndex].name}</em> ${shape}`
-      : shape;
+    : match>=0?`<em>${commonFish[match].name}</em> ${shape}`:shape;
 
-  applyStripedBackground(fishDiv,colors[p],colors[s]);
+  typeText.innerHTML=`${name} — ${p.toUpperCase()} / ${s.toUpperCase()}`;
 
-  typeText.innerHTML=`Name: ${name} | Type: ${p.toUpperCase()} / ${s.toUpperCase()}`;
+  const f=fishes[shape];
+  stats.innerHTML=`<b>Attack</b> ${f.atk} | <b>Defense</b> ${f.hp} | <b>Speed</b> ${f.spd}`;
 
-  stats.innerHTML=`
-    <div style="display:flex;justify-content:space-between;font-weight:bold">
-      <span>Attack</span><span>Defense</span><span>Speed</span>
-    </div>
-    <div style="display:flex;justify-content:space-between">
-      <span>${fish.atk}</span><span>${fish.hp}</span><span>${fish.spd}</span>
-    </div>`;
-
-  abilities.innerHTML="<h3>Abilities</h3>";
-  colors[p].abilities.slice(0,2).forEach(a=>{
-    abilities.innerHTML+=`<div class="ability"><div class="ability-name">${a.name}</div>${a.text}</div>`;
-  });
-
-  if(p!==s){
-    const a=colors[s].abilities[0];
-    abilities.innerHTML+=`<div class="ability"><div class="ability-name">${a.name}</div>${a.text}</div>`;
-  }
-
-  abilities.innerHTML+=`<div class="ability"><div class="ability-name">${fish.special}</div>${specialText[fish.special]}</div>`;
+  abilities.innerHTML=`<div class="ability">
+    <div class="ability-name">${f.special}</div>${specialText[f.special]}
+  </div>`;
 }
 
+cfSel.onchange=()=>{
+  const f=commonFish[cfSel.value];
+  if(!f){
+    fishShape.value="dasher";
+    primary.value="blue";
+    secondary.value="blue";
+    customName.value="";
+  } else {
+    fishShape.value=f.shape;
+    primary.value=f.primary;
+    secondary.value=f.secondary||f.primary;
+    customName.value="";
+  }
+  update();
+};
+
+fishShape.onchange=primary.onchange=secondary.onchange=customName.oninput=update;
+
 const fishDiv=document.getElementById("fish");
-const typeText=document.getElementById("typeText");
-const stats=document.getElementById("stats");
-const abilities=document.getElementById("abilities");
-
-fishShape.onchange=primary.onchange=secondary.onchange=customName.oninput=updateCard;
-
-updateCard();
+update();
 </script>
 
 </body>
