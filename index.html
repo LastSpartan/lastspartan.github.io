@@ -8,9 +8,12 @@
       background: #1e1e2e;
       color: white;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      gap: 30px;
       padding: 40px;
+    }
+
+    .sidebar {
+      width: 200px;
     }
 
     .card {
@@ -81,44 +84,49 @@
 </head>
 <body>
 
-<div class="card">
-  <h2>Fish Card</h2>
-
+<div class="sidebar">
+  <h3>Common Fish</h3>
   <select id="commonFish">
-    <option value="">Common Fish</option>
+    <option value="">-</option>
   </select>
-
-  <input id="customName" placeholder="Custom Fish Name" />
-
-  <select id="fishShape">
-    <option value="dasher">Dasher</option>
-    <option value="sunstreak">Sunstreak</option>
-    <option value="snooper">Snooper</option>
-    <option value="kob">Kob</option>
-    <option value="brinely">Brinely</option>
-    <option value="spotty">Spotty</option>
-    <option value="flopper">Flopper</option>
-    <option value="stripey">Stripey</option>
-    <option value="glitter">Glitter</option>
-    <option value="blockfish">Blockfish</option>
-    <option value="betty">Betty</option>
-    <option value="clayfish">Clayfish</option>
-  </select>
-
-  <select id="primary"></select>
-  <select id="secondary"></select>
-
-  <div id="fish" class="fish"></div>
-
-  <div class="type" id="typeText"></div>
-  <div id="stats"></div>
-  <div id="abilities"></div>
-
-  <button id="saveCard">Save Fish Card</button>
 </div>
 
-<h2>Saved Fish Cards</h2>
-<div id="savedCards"></div>
+<div>
+  <div class="card">
+    <h2>Fish Card</h2>
+
+    <input id="customName" placeholder="Custom Fish Name" />
+
+    <select id="fishShape">
+      <option value="dasher">Dasher</option>
+      <option value="sunstreak">Sunstreak</option>
+      <option value="snooper">Snooper</option>
+      <option value="kob">Kob</option>
+      <option value="brinely">Brinely</option>
+      <option value="spotty">Spotty</option>
+      <option value="flopper">Flopper</option>
+      <option value="stripey">Stripey</option>
+      <option value="glitter">Glitter</option>
+      <option value="blockfish">Blockfish</option>
+      <option value="betty">Betty</option>
+      <option value="clayfish">Clayfish</option>
+    </select>
+
+    <select id="primary"></select>
+    <select id="secondary"></select>
+
+    <div id="fish" class="fish"></div>
+
+    <div class="type" id="typeText"></div>
+    <div id="stats"></div>
+    <div id="abilities"></div>
+
+    <button id="saveCard">Save Fish Card</button>
+  </div>
+
+  <h2>Saved Fish Cards</h2>
+  <div id="savedCards"></div>
+</div>
 
 <script>
 const fishes = {
@@ -169,26 +177,36 @@ const commonFish = [
 
 const primarySel = document.getElementById("primary");
 const secondarySel = document.getElementById("secondary");
-
 Object.keys(colors).forEach(c=>{
   primarySel.innerHTML+=`<option value="${c}">${c}</option>`;
   secondarySel.innerHTML+=`<option value="${c}">${c}</option>`;
 });
 
-const cfSelect = document.getElementById("commonFish");
+const cfSelect=document.getElementById("commonFish");
 commonFish.forEach((f,i)=>{
   cfSelect.innerHTML+=`<option value="${i}">${f.name}</option>`;
 });
 
 cfSelect.onchange=()=>{
   const f=commonFish[cfSelect.value];
-  if(!f) return;
+  if(!f){
+    resetCard();
+    return;
+  }
   fishShape.value=f.shape;
   primary.value=f.primary;
   secondary.value=f.secondary||f.primary;
   customName.value="";
   updateCard();
 };
+
+function resetCard(){
+  fishShape.value="dasher";
+  primary.value="blue";
+  secondary.value="blue";
+  customName.value="";
+  updateCard();
+}
 
 function applyStripedBackground(div,p,s){
   if(p===s){
@@ -208,15 +226,19 @@ function updateCard(){
   const s=secondary.value;
   const fish=fishes[shape];
 
-  const match=commonFish.find(f=>
+  const matchIndex=commonFish.findIndex(f=>
     f.shape===shape &&
     f.primary===p &&
     (f.secondary||p)===s
   );
 
+  cfSelect.value=matchIndex>=0?matchIndex:"";
+
   const name=customName.value
     ? customName.value
-    : match ? `<em>${match.name}</em> ${shape}` : shape;
+    : matchIndex>=0
+      ? `<em>${commonFish[matchIndex].name}</em> ${shape}`
+      : shape;
 
   applyStripedBackground(fishDiv,colors[p],colors[s]);
 
@@ -243,12 +265,12 @@ function updateCard(){
   abilities.innerHTML+=`<div class="ability"><div class="ability-name">${fish.special}</div>${specialText[fish.special]}</div>`;
 }
 
-fishShape.onchange=primary.onchange=secondary.onchange=customName.oninput=updateCard;
-
 const fishDiv=document.getElementById("fish");
 const typeText=document.getElementById("typeText");
 const stats=document.getElementById("stats");
 const abilities=document.getElementById("abilities");
+
+fishShape.onchange=primary.onchange=secondary.onchange=customName.oninput=updateCard;
 
 updateCard();
 </script>
